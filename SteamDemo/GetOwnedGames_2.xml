@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="b2a5c728-6d9a-463b-a6b6-a8742e842ff8" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="GetOwnedGames_2" searchProperties="true" disabled="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="b2a5c728-6d9a-463b-a6b6-a8742e842ff8fileName">GetOwnedGames_2</con:setting></con:settings><con:savedRecentRuns>1</con:savedRecentRuns><con:testStep type="restrequest" name="OwnedGames" id="a2892f35-e4fe-427b-bf53-ed72393cf343"><con:settings/><con:config service="http://api.steampowered.com" resourcePath="/IPlayerService/GetOwnedGames/v0001/" methodName="V0001 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="OwnedGames" id="887b88e0-31cc-426c-81d0-e624ee69b33f" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://api.steampowered.com</con:endpoint><con:request/><con:originalUri>http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/</con:originalUri><con:assertion type="Simple Contains" id="f9b80ea3-b891-4539-a783-737d0ca97fad" name="Contains"><con:configuration><token>"playtime_forever"</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:assertion type="Valid HTTP Status Codes" id="f50c8ab1-8c2a-4dc1-8f1c-f8b8850e8f2a" name="Valid HTTP Status Codes"><con:settings/><con:configuration><codes>200</codes></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="steamid" value="${tempID}"/>
+  <con:entry key="format" value="json"/>
+  <con:entry key="key" value="54E82E96A6E43ED09207FCAF2BD5BE2D"/>
+</con:parameters><con:parameterOrder><con:entry>key</con:entry><con:entry>format</con:entry><con:entry>steamid</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="transfer" name="GetAppID" id="9ce85b95-6b01-405a-b856-e0151e536b2a"><con:settings/><con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false"><con:name>A_ID</con:name><con:sourceType>Response</con:sourceType><con:sourceStep>OwnedGames</con:sourceStep><con:sourcePath>$.response.games.[*].appid</con:sourcePath><con:targetType>GameID_2</con:targetType><con:targetStep>#TestSuite#</con:targetStep><con:type>JSONPATH</con:type><con:targetTransferType>JSONPATH</con:targetTransferType><con:upgraded>true</con:upgraded></con:transfers></con:config></con:testStep><con:testStep type="groovy" name="GetAID" id="6e7e77b0-a947-4bba-8568-cf407670eb27"><con:settings/><con:config><script>//import jxl.*; 
+//import jxl.write.*
+def a =testRunner.testCase.testSuite.getPropertyValue("GameID") 
+def b =testRunner.testCase.testSuite.getPropertyValue("GameID_2") 
+//def  c = a.intersect(b) 
+
+def c =  a[1..a.length()-2].tokenize(',')
+def d =   b[1..b.length()-2].tokenize(',')
+def f = d.intersect(c)
+int arraySize = f.size()
+log.info arraySize
+log.info f
+
+//for(int i =0;  i &lt; arraySize;  i++)
+//testRunner.testCase.testSuite.setPropertyValue("CommonID", f[i])
+//testRunner.runTestStepByName("GetAchivements")
+</script></con:config></con:testStep><con:testStep type="restrequest" name="GetAchivements" id="85e1f625-0b4c-45eb-ad9c-134081ab9eda"><con:settings/><con:config service="http://api.steampowered.com" resourcePath="/ISteamUserStats/GetPlayerAchievements/v0001/" methodName="V0001 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="GetAchivements" id="f88daedf-9463-4259-b5b3-6d319f2cae3d" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://api.steampowered.com</con:endpoint><con:request/><con:originalUri>http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="steamid" value="${#TestSuite#PlayerID}"/>
+  <con:entry key="appid" value="${#TestSuite#CommonID}"/>
+  <con:entry key="key" value="54E82E96A6E43ED09207FCAF2BD5BE2D"/>
+</con:parameters><con:parameterOrder><con:entry>key</con:entry><con:entry>steamid</con:entry><con:entry>appid</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:properties><con:property><con:name>CommonID</con:name><con:value> 273350</con:value></con:property></con:properties><con:reportParameters/></con:testCase>

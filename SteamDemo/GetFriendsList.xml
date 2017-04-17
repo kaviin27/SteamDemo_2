@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:testCase id="378da715-b40c-4992-8e26-f8d82dcc92d1" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="GetFriendsList" searchProperties="true" xmlns:con="http://eviware.com/soapui/config"><con:settings><con:setting id="378da715-b40c-4992-8e26-f8d82dcc92d1fileName">GetFriendsList</con:setting></con:settings><con:savedRecentRuns>1</con:savedRecentRuns><con:testStep type="restrequest" name="Friendslist" id="d3459a1b-2f91-4583-8693-b42f55fd3ce8"><con:settings/><con:config service="http://api.steampowered.com" resourcePath="/ISteamUser/GetFriendList/v0001/" methodName="V0001 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Friendslist" id="9c195fa5-8820-4af8-ae77-ded1e73374ea" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://api.steampowered.com</con:endpoint><con:request/><con:originalUri>http://api.steampowered.com/ISteamUser/GetFriendList/v0001/</con:originalUri><con:assertion type="Simple Contains" id="2349e9c0-d22f-4e55-afc9-3ffc121d6ab7" name="Contains"><con:configuration><token>"relationship": "friend"</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:assertion type="Valid HTTP Status Codes" id="64204425-d669-4bc0-988f-471a87c5617b" name="Valid HTTP Status Codes"><con:settings/><con:configuration><codes>200</codes></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="steamid" value="${#TestSuite#PlayerID}"/>
+  <con:entry key="relationship" value="friend"/>
+  <con:entry key="key" value="54E82E96A6E43ED09207FCAF2BD5BE2D"/>
+</con:parameters><con:parameterOrder><con:entry>key</con:entry><con:entry>steamid</con:entry><con:entry>relationship</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="transfer" name="GetSteamIDs" id="3efe07c8-6113-4f7d-94c3-ab6f9d86f950"><con:settings/><con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false" disabled="false"><con:name>ID</con:name><con:sourceType>Response</con:sourceType><con:sourceStep>Friendslist</con:sourceStep><con:sourcePath>$.friendslist.friends[*].steamid</con:sourcePath><con:targetType>FriendsList</con:targetType><con:targetStep>#TestSuite#</con:targetStep><con:type>JSONPATH</con:type><con:targetTransferType>JSONPATH</con:targetTransferType><con:upgraded>true</con:upgraded></con:transfers></con:config></con:testStep><con:testStep type="groovy" name="PlayerList" id="79058e73-cb09-414a-ae13-ef4bb60e2156"><con:settings/><con:config><script>def a =testRunner.testCase.testSuite.getPropertyValue("FriendsList")
+def b =  a[1..a.length()-2].tokenize(',')
+int arraySize = b.size()
+log.info arraySize
+def n =testRunner.testCase.testSuite.getPropertyValue("PlayerID")
+testRunner.testCase.testSuite.setPropertyValue("PlayerID_2",n)
+testRunner.runTestStepByName("OwnedGames")
+testRunner.runTestStepByName("GetAppID")
+def c = testRunner.testCase.testSuite.getPropertyValue("GameID_2")
+testRunner.testCase.testSuite.setPropertyValue("GameID",c)
+for(int i =0; i &lt; arraySize;  i++)
+{
+testRunner.testCase.testSuite.setPropertyValue("PlayerID", b[i])
+log.info b[i]
+testRunner.runTestStepByName("OwnedGames")
+testRunner.runTestStepByName("GetAppID")
+testRunner.runTestStepByName("GetAID")
+}
+testRunner.cancel()</script></con:config></con:testStep><con:testStep type="restrequest" name="OwnedGames" id="e4531b48-40df-4af7-bd4b-260ed02a30da"><con:settings/><con:config service="http://api.steampowered.com" resourcePath="/IPlayerService/GetOwnedGames/v0001/" methodName="V0001 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="OwnedGames" id="887b88e0-31cc-426c-81d0-e624ee69b33f" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://api.steampowered.com</con:endpoint><con:request/><con:originalUri>http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/</con:originalUri><con:assertion type="Simple Contains" id="f9b80ea3-b891-4539-a783-737d0ca97fad" name="Contains"><con:configuration><token>"playtime_forever"</token><ignoreCase>false</ignoreCase><useRegEx>false</useRegEx></con:configuration></con:assertion><con:assertion type="Valid HTTP Status Codes" id="f50c8ab1-8c2a-4dc1-8f1c-f8b8850e8f2a" name="Valid HTTP Status Codes"><con:settings/><con:configuration><codes>200</codes></con:configuration></con:assertion><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="steamid" value="${#TestSuite#PlayerID}"/>
+  <con:entry key="format" value="json"/>
+  <con:entry key="key" value="54E82E96A6E43ED09207FCAF2BD5BE2D"/>
+</con:parameters><con:parameterOrder><con:entry>key</con:entry><con:entry>format</con:entry><con:entry>steamid</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="transfer" name="GetAppID" id="9e50f81b-5be7-4a1b-8260-0e2614a46376"><con:settings/><con:config xsi:type="con:PropertyTransfersStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:transfers setNullOnMissingSource="true" transferTextContent="true" failOnError="true" ignoreEmpty="false" transferToAll="false" entitize="false" transferChildNodes="false"><con:name>A_ID</con:name><con:sourceType>Response</con:sourceType><con:sourceStep>OwnedGames</con:sourceStep><con:sourcePath>$.response.games.[*].appid</con:sourcePath><con:targetType>GameID_2</con:targetType><con:targetStep>#TestSuite#</con:targetStep><con:type>JSONPATH</con:type><con:targetTransferType>JSONPATH</con:targetTransferType><con:upgraded>true</con:upgraded></con:transfers></con:config></con:testStep><con:testStep type="groovy" name="GetAID" id="f7eb7c52-f058-4003-8ae4-f820f8662945"><con:settings/><con:config><script>def z =testRunner.testCase.testSuite.getPropertyValue("GameID") 
+//testRunner.testCase.testSuite.setPropertyValue("GameID_2",z)
+def y =testRunner.testCase.testSuite.getPropertyValue("GameID_2") 
+def x =  z[1..z.length()-2].tokenize(',')
+def w =   y[1..y.length()-2].tokenize(',')
+def v = w.intersect(x) 
+String s = v
+
+//log.info s
+//log.info "${s.getClass()}"
+//int arraySize_1 = v.size()
+//testRunner.testCase.testSuite.setPropertyValue("X",arraySize_1)
+testRunner.testCase.testSuite.setPropertyValue("CommonList",s)
+testRunner.runTestStepByName("AchivementsLoop")
+</script></con:config></con:testStep><con:testStep type="groovy" name="AchivementsLoop" id="cbcb8f12-1c06-4be0-80c4-b112864c586c"><con:settings/><con:config><script>def p =testRunner.testCase.testSuite.getPropertyValue("CommonList")
+def L =  p[1..p.length()-2].tokenize(',')
+int arraySize_1 = L.size()
+log.info arraySize_1
+for(int q =0;  q &lt; arraySize_1;  q++)
+testRunner.testCase.testSuite.setPropertyValue("CommonID", L[q])
+testRunner.runTestStepByName("GetAchivements")
+testRunner.runTestStepByName("DataSink")
+testRunner.runTestStepByName("GetAchivements_2")
+</script></con:config></con:testStep><con:testStep type="restrequest" name="GetAchivements" id="7e8687a2-8e63-4072-9c0a-fcb1cb02dc9e"><con:settings/><con:config service="http://api.steampowered.com" resourcePath="/ISteamUserStats/GetPlayerAchievements/v0001/" methodName="V0001 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="GetAchivements" id="f88daedf-9463-4259-b5b3-6d319f2cae3d" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://api.steampowered.com</con:endpoint><con:request/><con:originalUri>http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="steamid" value="${#TestSuite#PlayerID}"/>
+  <con:entry key="appid" value="${#TestSuite#CommonID}"/>
+  <con:entry key="key" value="54E82E96A6E43ED09207FCAF2BD5BE2D"/>
+</con:parameters><con:parameterOrder><con:entry>key</con:entry><con:entry>steamid</con:entry><con:entry>appid</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="GetAchivements_2" id="475a822b-b9a4-4744-a81b-afd34b9c4870"><con:settings/><con:config service="http://api.steampowered.com" resourcePath="/ISteamUserStats/GetPlayerAchievements/v0001/" methodName="V0001 1" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="GetAchivements_2" id="f88daedf-9463-4259-b5b3-6d319f2cae3d" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://api.steampowered.com</con:endpoint><con:request/><con:originalUri>http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/</con:originalUri><con:credentials><con:selectedAuthProfile>No Authorization</con:selectedAuthProfile><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="steamid" value="${#TestSuite#PlayerID_2}"/>
+  <con:entry key="appid" value="${#TestSuite#CommonID}"/>
+  <con:entry key="key" value="54E82E96A6E43ED09207FCAF2BD5BE2D"/>
+</con:parameters><con:parameterOrder><con:entry>key</con:entry><con:entry>steamid</con:entry><con:entry>appid</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:properties/><con:reportParameters/><con:breakPoints><con:testStepId>79058e73-cb09-414a-ae13-ef4bb60e2156</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>9e50f81b-5be7-4a1b-8260-0e2614a46376</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints><con:breakPoints><con:testStepId>cbcb8f12-1c06-4be0-80c4-b112864c586c</con:testStepId><con:status>NONE</con:status><con:properties/></con:breakPoints></con:testCase>
